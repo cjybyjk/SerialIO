@@ -6,7 +6,6 @@
 */
 
 #include <SerialIO.h>
-#include <math.h>
 
 int vsscanf(char *__buf, char *__fmt, va_list __ap)
 {
@@ -71,14 +70,13 @@ int vsscanf(char *__buf, char *__fmt, va_list __ap)
                     case 's':
                         /* 读入字符串 */
                         twidth = 0;
-                        *str = NULL;
+                        str = NULL;
                         if (!ignorevar) {
-                            *str = va_arg(__ap, char*);
+                            str = va_arg(__ap, char*);
                         }
                         while (*pbuf && *pbuf != ' ' && *pbuf != '\t' && *pbuf != '\n') {
                             if (!ignorevar) {
-                                *str = *pbuf;
-                                str++;
+                                str[twidth] = *pbuf;
                             }
                             pbuf++;
                             twidth++;
@@ -87,7 +85,7 @@ int vsscanf(char *__buf, char *__fmt, va_list __ap)
                             }
                         }
                         if (!ignorevar) {
-                            *str = '\0';
+                            str[twidth] = '\0';
                             ret++;
                         }
                         flagFmt = false;
