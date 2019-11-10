@@ -1,0 +1,17 @@
+{
+    "name": "SerialIO",
+    "keywords": "serial, stdio",
+    "description": "一个为串口实现printf/scanf的lib",
+    "authors": [{
+        "name": "Chen Jingyi",
+        "email": "cjybyjk@zjnu.edu.cn",
+        "maintainer": true
+    }],
+    "frameworks": [
+        "arduino"
+    ],
+    "platforms": [
+        "atmelavr",
+        "teensy"
+    ]
+}
