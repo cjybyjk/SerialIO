@@ -1,7 +1,11 @@
 {
     "name": "SerialIO",
-    "keywords": "serial, stdio",
-    "description": "一个为串口实现printf/scanf的lib",
+    "keywords": "serial, communication",
+    "description": "一个为串口通信实现printf/scanf的library",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cjybyjk/SerialIO.git"
+    },
     "authors": [{
         "name": "Chen Jingyi",
         "email": "cjybyjk@zjnu.edu.cn",

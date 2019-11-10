@@ -280,4 +280,3 @@ int mserialscanf(HardwareSerial *serial, char *__fmt, ...)
     va_end(argp);
     return res;
 }
-

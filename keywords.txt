@@ -1,0 +1,11 @@
+SerialIO	    KEYWORD1
+
+mserialprintf	KEYWORD2
+serialprintf	KEYWORD2
+mwaitserial 	KEYWORD2
+waitserial  	KEYWORD2
+mreadserial 	KEYWORD2
+readserial	    KEYWORD2
+mserialscanf	KEYWORD2
+serialscanf	    KEYWORD2
+vsscanf	        KEYWORD2
