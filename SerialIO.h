@@ -21,6 +21,16 @@ int vsscanf(char *__buf, char *__fmt, va_list __ap)
     int ret = 0; // 返回值
     bool flagFmt = false; //正在读取格式化字符的标志
 
+	int width = 0; // 场宽
+	char numType = 1; //0: short, 1: normal, 2: long, 3: long long
+	long long num = 0; // 用于读入有符号整型
+	unsigned long long unum = 0; // 用于读入无符号整型
+	long double fnum = 0; // 用于读入实数
+
+	int twidth = 0; // 当前场宽
+	char isLowerNum = 0; //小数点
+	char sign = 1; // 符号
+
     while (*pfmt) {
         flagFmt = *pfmt == '%';
         if (!flagFmt) {
@@ -31,16 +41,6 @@ int vsscanf(char *__buf, char *__fmt, va_list __ap)
                 pfmt++;
             }
         } else {
-            int width = 0; // 场宽
-            char numType = 1; //0: short, 1: normal, 2: long, 3: long long
-            long long num = 0; // 用于读入有符号整型
-            unsigned long long unum = 0; // 用于读入无符号整型
-            long double fnum = 0; // 用于读入实数
-
-            int twidth = 0; // 当前场宽
-            char isLowerNum = 0; //小数点
-            char sign = 1; // 符号
-
             while (flagFmt) {
                 /* 预处理 */
                 while (*pbuf == ' ')
