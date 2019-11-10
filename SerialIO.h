@@ -26,13 +26,16 @@ int vsscanf(char *__buf, char *__fmt, va_list __ap)
 	long long num = 0; // 用于读入有符号整型
 	unsigned long long unum = 0; // 用于读入无符号整型
 	long double fnum = 0; // 用于读入实数
+    char *str = NULL; // 读入字符串
 
 	int twidth = 0; // 当前场宽
 	char isLowerNum = 0; //小数点
 	char sign = 1; // 符号
+    bool ignorevar = false; // 读入但不存储
 
     while (*pfmt) {
         flagFmt = *pfmt == '%';
+        ignorevar = false;
         if (!flagFmt) {
             if (*pfmt != *pbuf) { //输入和格式不一样就退出
                 break;
@@ -62,30 +65,38 @@ int vsscanf(char *__buf, char *__fmt, va_list __ap)
                             width = 1;
                         }
                         for (twidth = 0; !width || twidth < width; twidth++) {
-                            *va_arg(__ap, char*) = *pbuf;
+                            if (!ignorevar) {
+                                *va_arg(__ap, char*) = *pbuf;
+                                ret++;
+                            }
                             pbuf++;
-                            ret++;
                         }
                         flagFmt = false;
                         break;
                     case 's':
-                    {
                         /* 读入字符串 */
                         twidth = 0;
-                        char *str = va_arg(__ap, char*);
+                        *str = NULL;
+                        if (!ignorevar) {
+                            *str = va_arg(__ap, char*);
+                        }
                         while (*pbuf && *pbuf != ' ' && *pbuf != '\t' && *pbuf != '\n') {
-                            str[twidth] = *pbuf;
+                            if (!ignorevar) {
+                                *str = *pbuf;
+                                str++;
+                            }
                             pbuf++;
                             twidth++;
                             if (width && twidth >= width) {
                                 break;
                             }
                         }
-                        str[twidth] = '\0';
-                        ret++;
+                        if (!ignorevar) {
+                            *str = '\0';
+                            ret++;
+                        }
                         flagFmt = false;
                         break;
-                    }
                     case 'l':
                         /* long / long long 格式控制字符 */
                         if (numType == 2) {
@@ -122,22 +133,24 @@ int vsscanf(char *__buf, char *__fmt, va_list __ap)
                             twidth++;
                         }
                         num *= sign;
-                        switch (numType) // 判断数据大小
-                        {
-                            case 0:
-                                *va_arg(__ap, short*) = (short)num;
-                                break;
-                            case 2:
-                                *va_arg(__ap, long*) = (long)num;
-                                break;
-                            case 3:
-                                *va_arg(__ap, long long*) = num;
-                                break;
-                            default:
-                                *va_arg(__ap, int*) = (int)num;
-                                break;
+                        if (!ignorevar) {
+                            switch (numType) // 判断数据大小
+                            {
+                                case 0:
+                                    *va_arg(__ap, short*) = (short)num;
+                                    break;
+                                case 2:
+                                    *va_arg(__ap, long*) = (long)num;
+                                    break;
+                                case 3:
+                                    *va_arg(__ap, long long*) = num;
+                                    break;
+                                default:
+                                    *va_arg(__ap, int*) = (int)num;
+                                    break;
+                            }
+                            ret++;
                         }
-                        ret++;
                         numType = 1;
                         flagFmt = false;
                         break;
@@ -155,22 +168,24 @@ int vsscanf(char *__buf, char *__fmt, va_list __ap)
                             }
                             twidth++;
                         }
-                        switch (numType) // 判断数据大小
-                        {
-                            case 0:
-                                *va_arg(__ap, unsigned short*) = (unsigned short)unum;
-                                break;
-                            case 2:
-                                *va_arg(__ap, unsigned long*) = (unsigned long)unum;
-                                break;
-                            case 3:
-                                *va_arg(__ap, unsigned long long*) = unum;
-                                break;
-                            default:
-                                *va_arg(__ap, unsigned int*) = (unsigned int)unum;
-                                break;
+                        if (!ignorevar) {
+                            switch (numType) // 判断数据大小
+                            {
+                                case 0:
+                                    *va_arg(__ap, unsigned short*) = (unsigned short)unum;
+                                    break;
+                                case 2:
+                                    *va_arg(__ap, unsigned long*) = (unsigned long)unum;
+                                    break;
+                                case 3:
+                                    *va_arg(__ap, unsigned long long*) = unum;
+                                    break;
+                                default:
+                                    *va_arg(__ap, unsigned int*) = (unsigned int)unum;
+                                    break;
+                            }
+                            ret++;
                         }
-                        ret++;
                         numType = 1;
                         flagFmt = false;
                         break;
@@ -203,22 +218,26 @@ int vsscanf(char *__buf, char *__fmt, va_list __ap)
                             twidth++;
                         }
                         fnum *= sign;
-
-                        switch (numType) // 判断数据大小
-                        {
-                            case 2:
-                                *va_arg(__ap, double*) = (double)fnum;
-                                break;
-                            case 3:
-                                *va_arg(__ap, long double*) = fnum;
-                                break;
-                            default:
-                                *va_arg(__ap, float*) = (float)fnum;
-                                break;
+                        if (!ignorevar) {
+                            switch (numType) // 判断数据大小
+                            {
+                                case 2:
+                                    *va_arg(__ap, double*) = (double)fnum;
+                                    break;
+                                case 3:
+                                    *va_arg(__ap, long double*) = fnum;
+                                    break;
+                                default:
+                                    *va_arg(__ap, float*) = (float)fnum;
+                                    break;
+                            }
+                            ret++;
                         }
-                        ret++;
                         numType = 1;
                         flagFmt = false;
+                        break;
+                    case '*':
+                        ignorevar = true;
                         break;
                     default:
                         break;
