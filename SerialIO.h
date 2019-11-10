@@ -8,7 +8,6 @@
 #ifndef _serialio_h_
 #define _serialio_h_
 
-#include <math.h>
 #include <Arduino.h>
 
 // scanf 实现
