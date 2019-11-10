@@ -241,7 +241,7 @@ int vsscanf(char *__buf, char *__fmt, va_list __ap)
     return ret;
 }
 
-int serialprintf(HardwareSerial *serial, const char *__fmt, ...)
+int mserialprintf(HardwareSerial *serial, const char *__fmt, ...)
 {
     char res[1024] = {0};
     // 通过 vsprintf 得到格式化后的字符串
@@ -253,31 +253,14 @@ int serialprintf(HardwareSerial *serial, const char *__fmt, ...)
     return serial->print(res);
 }
 
-int serialprintf(const char *__fmt, ...)
-{
-    char res[1024] = {0};
-    // 通过 vsprintf 得到格式化后的字符串
-    va_list ap;
-    va_start(ap, __fmt);
-    vsprintf(res, __fmt, ap);
-    va_end(ap);
-    // 输出到串口
-    return Serial.print(res);
-}
-
-void waitserial(HardwareSerial *serial)
+void mwaitserial(HardwareSerial *serial)
 {
     while(serial->available() == 0) {
         delay(2);
     }
 }
 
-void waitserial()
-{
-    waitserial(&Serial);
-}
-
-void readserial(HardwareSerial *serial, char *__buf)
+void mreadserial(HardwareSerial *serial, char *__buf)
 {
     while(Serial.available() > 0) {
         *__buf = serial->read();
@@ -286,10 +269,10 @@ void readserial(HardwareSerial *serial, char *__buf)
     }
 }
 
-int serialscanf(HardwareSerial *serial, char *__fmt, ...)
+int mserialscanf(HardwareSerial *serial, char *__fmt, ...)
 {
     char vbuf[1024] = {0};
-    readserial(serial, vbuf);
+    mreadserial(serial, vbuf);
     // 通过 vsscanf 处理输入
     va_list argp;
     va_start(argp, __fmt);
@@ -298,14 +281,3 @@ int serialscanf(HardwareSerial *serial, char *__fmt, ...)
     return res;
 }
 
-int serialscanf(char *__fmt, ...)
-{
-    char vbuf[1024] = {0};
-    readserial(&Serial, vbuf);
-    // 通过 vsscanf 处理输入
-    va_list argp;
-    va_start(argp, __fmt);
-    int res = vsscanf(vbuf, __fmt, argp);
-    va_end(argp);
-    return res;
-}

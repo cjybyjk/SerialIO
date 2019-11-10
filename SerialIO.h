@@ -20,19 +20,22 @@ int vsscanf(char *__buf, char *__fmt, va_list __ap);
 
 // 格式化内容，然后输出到串口
 // 用法和printf一样
-int serialprintf(HardwareSerial *serial, const char *__fmt, ...);
-int serialprintf(const char *__fmt, ...);
+int mserialprintf(HardwareSerial *serial, const char *__fmt, ...);
+#define serialprintf(serial, fmt, ...) mserialprintf(serial, (char*)fmt, ##__VA_ARGS__)
+#define serialprintf(fmt, ...) mserialprintf(&Serial, (char*)fmt, ##__VA_ARGS__)
 
 // 等待串口输入
-void waitserial(HardwareSerial *serial);
-void waitserial();
+void mwaitserial(HardwareSerial *serial);
+#define waitserial() mwaitserial(&Serial)
 
 // 从串口读数据
-void readserial(HardwareSerial *serial, char *__buf);
+void mreadserial(HardwareSerial *serial, char *__buf);
+#define readserial(buf) mreadserial(&Serial, buf)
 
 // 格式化Serial输入的内容
 // 用法和scanf一样
-int serialscanf(HardwareSerial *serial, char *__fmt, ...);
-int serialscanf(char *__fmt, ...);
+int mserialscanf(HardwareSerial *serial, char *__fmt, ...);
+#define serialscanf(serial, fmt, ...) mserialscanf(serial, (char*)fmt, ##__VA_ARGS__)
+#define serialscanf(fmt, ...) mserialscanf(&Serial, (char*)fmt, ##__VA_ARGS__)
 
 #endif
